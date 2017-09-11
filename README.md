@@ -56,7 +56,7 @@ A quick way to create a test script is to use [Robotcorder](http://bit.ly/hats-r
 ### Writing/Editing a test
 You can either use
 1. [Eclipse IDE](https://eclipse.org/) with [RED plugin](https://github.com/nokia/RED)
-2. [Pycharm IDE](PyCharm - JetBrains) with [IntelliBot plugin](https://plugins.jetbrains.com/plugin/7386-intellibot)
+2. [Pycharm IDE](https://www.jetbrains.com/pycharm/) with [IntelliBot plugin](https://plugins.jetbrains.com/plugin/7386-intellibot)
 3. [Notepad++](https://notepad-plus-plus.org/)
 
 ### Running a test
