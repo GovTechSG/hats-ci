@@ -39,6 +39,9 @@ else
 	$env:Path = "$env:Path;$env:JAVA_HOME\bin";
 }
 
+$client = new-object System.Net.WebClient;
+$path_to_hats = "$env:PROGRAMFILES\hats"
+
 echo "INFO: Set path to browser drivers for this session"
 
 . $path_to_hats\utils\Get-ExeTargetMachine.ps1
@@ -73,7 +76,7 @@ else
 	$env:Path = "$env:Path;$path_to_hats\drivers\ie64";
 }
 
-$env:Path = "$env:Path;$path_to_hats\drivers\ie";
+#$env:Path = "$env:Path;$path_to_hats\drivers\ie";
 
 $path_to_programfiles_x86 = "C:\Program Files (x86)"
 
@@ -91,7 +94,6 @@ if (Test-Path env:chrome_path) {
 if (Test-Path $chrome_path) 
 {
 	$chrome_version = (Get-Item $chrome_path).VersionInfo.FileVersion
-
 	if ($chrome_version -eq $null)
 	{
 		echo "WARN: Could not detect Google Chrome"
@@ -99,7 +101,12 @@ if (Test-Path $chrome_path)
 	else
 	{
 		echo "INFO: Found Google Chrome Version $chrome_version"
-		if ($chrome_version -match "^5[6-8].*") 
+
+        $chrome_version_short = $chrome_version.substring(0,2)
+        $chromedriver_source_path = "$path_to_hats\chromedriver-32-chrome{0}.zip" -f $chrome_version_short
+        $chromedriver_destination_path = "$path_to_hats\drivers\chrome-{0}" -f $chrome_version_short
+
+        if ($chrome_version -match "^5[6-8].*") 
 		{
 			echo "INFO: Support for Chrome v58 enabled"
 			$env:Path = "$env:Path;$path_to_hats\drivers\chrome-58";
@@ -119,9 +126,37 @@ if (Test-Path $chrome_path)
 			echo "INFO: Support for Chrome v-74-76 enabled"
 			$env:Path = "$env:Path;$path_to_hats\drivers\chrome-76";
 		}
-		else {
-			$env:Path = "$env:Path;$path_to_hats\drivers\chrome-76";
+		elseif ($chrome_version_short -eq "77") 
+		{
+			echo "INFO: Support for Chrome v77 enabled"
+			$env:Path = "$env:Path;$path_to_hats\drivers\chrome-77";
 		}
+		elseif ($chrome_version_short -eq "78") 
+		{
+			echo "INFO: Support for Chrome v78 enabled"
+			$env:Path = "$env:Path;$path_to_hats\drivers\chrome-78";
+		}
+        else
+        {
+            if (Test-Path -Path $chromedriver_destination_path)
+            {
+                echo "INFO: Support for Chrome v{0} enabled" -f $chrome_version_short
+                $env:Path = "$env:Path;$path_to_hats\drivers\chrome-{0}" -f $chrome_version_short;
+            }
+            else
+            {
+                echo "INFO: Support for Chrome v{0} not found" -f $chrome_version_short
+                $chromedriver_version_url = "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_{0}" -f $chrome_version.substring(0, $chrome_version.length - 2)
+                $chromedriver_version = Invoke-WebRequest $chromedriver_version_url
+                $chromedriver_filename = "chromedriver-32-chrome{0}.zip" -f $chrome_version_short
+                echo "INFO: Downloading latest Chromedriver from https://chromedriver.storage.googleapis.com/{0}/chromedriver_win32.zip" -f $chromedriver_version.Content
+                $client.DownloadFile("https://chromedriver.storage.googleapis.com/{0}/chromedriver_win32.zip" -f $chromedriver_version.Content, $chromedriver_source_path);
+                Expand-Archive -LiteralPath $chromedriver_source_path -DestinationPath $chromedriver_destination_path
+                Remove-Item $chromedriver_source_path
+                echo "INFO: Support for Chrome v{0} enabled" -f $chrome_version_short
+                $env:Path = "$env:Path;$path_to_hats\drivers\chrome-{0}" -f $chrome_version_short;
+            }
+        }
 	}
 	
 }
@@ -196,8 +231,35 @@ else
 
 $edge_path = "C:\Windows\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe"
 
-if (Test-Path env:edge_path) {
-	$edge_path = $env:edge_path
+if (Test-Path $edge_path) {
+    $edge_version = (Get-AppxPackage Microsoft.MicrosoftEdge).Version
+
+    if ($edge_version -eq "44.18362.1.0")
+    {
+        echo "INFO: Found 64-bit Microsoft Edge Version $edge_version."
+    }
+    else
+    {
+        if ($edge_version -eq "42.17134.1.0")
+        {
+            $env:Path = "$env:Path;$path_to_hats\drivers\edge-64-42";
+            echo "INFO: Found 64-bit Microsoft Edge Version $edge_version."
+        }
+        elseif ($edge_version -eq "41.16299.15")
+        {
+            $env:Path = "$env:Path;$path_to_hats\drivers\edge-64-41";
+            echo "INFO: Found 64-bit Microsoft Edge Version $edge_version."
+        }
+        elseif ($edge_version -eq "40.15063")
+        {
+            $env:Path = "$env:Path;$path_to_hats\drivers\edge-64-40";
+            echo "INFO: Found 64-bit Microsoft Edge Version $edge_version."
+        }
+        else
+        {
+            echo "INFO: Found 64-bit Microsoft Edge Version $edge_version. Only version 40.15063 or greater are supported."
+        }
+    }
 }
 
 # if (Test-Path $edge_path)
