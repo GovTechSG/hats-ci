@@ -17,8 +17,8 @@ As a group of passionate quality engineers, we want to lower the barrier of entr
 *hats* has been tested on the following platforms:
 
 ##### Operating Systems
-* Windows 7, 8.1, 10 (64-bit)
-* Mac OS X El-Capitan, macOS Sierra, High Sierra, Mojave
+* Active support for Windows 10 1709, 1803, 1809, 1903 (64-bit)
+* Active support for macOS Mojave and Catalina
 * Linux CentOS, Fedora, Ubuntu instructions are available at https://github.com/younglim/hats-linux .
 
 ##### Browsers

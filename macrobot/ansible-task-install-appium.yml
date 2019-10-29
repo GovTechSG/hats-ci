@@ -23,7 +23,6 @@
      with_items:
       - appium
       - wd
-      - ios-deploy
       - ios-deviceconsole
       - appium-doctor
      ignore_errors: true
@@ -33,6 +32,7 @@
         name: "{{ item }}"
         state: present
      with_items:
+       - ios-deploy
        - ideviceinstaller
        - carthage
        - libimobiledevice

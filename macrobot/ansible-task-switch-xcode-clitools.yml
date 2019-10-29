@@ -1,8 +1,8 @@
 ---
 
-   - name: Switch to /Applications/Xcode.app/Contents/Developer  
+   - name: Switch to /Applications/Xcode*.app  
      become: true
-     shell: xcode-select -s /Applications/Xcode.app/Contents/Developer 
+     shell: xcode-select -s $(find /Applications/Xcode*.app -maxdepth 0 -type d) 
      
    - name: Creates or Check for ~/.bash_profile existence
      file:

@@ -71,7 +71,7 @@ python-dateutil==2.6.0
 python-owasp-zap-v2.4==0.0.12
 PyTweening==1.0.3
 pytz==2017.2
-PyYAML==3.12
+#PyYAML==3.12
 query-string==0.0.28
 redis==2.10.5
 requests==2.18.1
